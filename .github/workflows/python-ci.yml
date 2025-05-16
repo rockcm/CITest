@@ -1,32 +1,43 @@
+# This is the name of the workflow that appears in GitHub Actions UI
 name: FastAPI CI
 
+# Defines when this workflow will run
 on:
   push:
-    branches: [ main ]
+    branches: [ main ]  # Triggers workflow when code is pushed to main branch
   pull_request:
-    branches: [ main ]
+    branches: [ main ]  # Triggers workflow when a PR is created targeting main branch
 
+# A workflow contains one or more jobs that can run sequentially or in parallel
 jobs:
+  # This job is named "build" but actually handles build, test, and verification
   build:
+    # Specifies the type of runner that the job will run on
     runs-on: ubuntu-latest
 
+    # A job contains a sequence of tasks called steps
     steps:
+    # Step 1: Check out your repository code so the workflow can access it
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v3  # This is a pre-built action that checks out your repo
 
+    # Step 2: Set up Python environment
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v4  # This action installs Python
       with:
-        python-version: '3.10'
+        python-version: '3.10'  # Specifies which Python version to use
 
+    # Step 3: Install project dependencies
     - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
+      run: |  # This runs shell commands on the runner
+        python -m pip install --upgrade pip  # Upgrade pip first
+        pip install -r requirements.txt  # Install project dependencies
 
+    # Step 4: Set the PYTHONPATH environment variable for imports to work correctly
     - name: Set PYTHONPATH
-      run: echo "PYTHONPATH=$PWD" >> $GITHUB_ENV
+      run: echo "PYTHONPATH=$PWD" >> $GITHUB_ENV  # Makes the current dir the root for imports
 
+    # Step 5: Run tests to verify the code works correctly
     - name: Run tests
       run: |
-        pytest
+        pytest  # Run all tests using pytest framework
